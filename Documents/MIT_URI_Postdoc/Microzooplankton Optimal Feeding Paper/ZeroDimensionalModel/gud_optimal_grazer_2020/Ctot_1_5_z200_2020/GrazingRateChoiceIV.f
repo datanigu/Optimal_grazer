@@ -120,8 +120,8 @@ c        print*,'pCsize',pCsize
       do 700 i=ind1,ind2
        do 800 j=1,pnum
          gtemp(i,j) = 1/h(i,j,f)*(pCsize(j)/(pCsize(j) 
-     &      + zCcell(i,f)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))
-c     &      + pCcell(j)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))!<- This is what changed in 2020
+c     &      + zCcell(i,f)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))
+     &      + pCcell(j)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))!<- This is what changed in 2020
 800    continue
 700   continue
 
@@ -139,8 +139,8 @@ c          print*,'grazed size class chosen by clearance'
            do 875 j = 1,pnum
               if (j .eq. prefpreyclass(f)) then
          gtemp(i,j) = 1/h(i,j,f)*(pCsize(j)/(pCsize(j) 
-     &      + zCcell(i,f)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))
-c     &      + pCcell(j)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))!<- This is what changed in 2020
+c     &      + zCcell(i,f)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))
+     &      + pCcell(j)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))!<- This is what changed in 2020
               else
          gtemp(i,j) = 0.0
              end if
@@ -240,8 +240,8 @@ c           print*,'grazeflag2',grazeflag2
        gpressure(indi, indj) = 
      &                1/h(indi,indj,f)
      &    *(pCsize(indj)/(pCsize(indj) 
-     &      + zCcell(indi,f)/beta(indi,indj,f)/h(indi,indj,f)
-c     &      + pCcell(indj)/beta(indi,indj,f)/h(indi,indj,f)!<- Changed in 2020
+c     &      + zCcell(indi,f)/beta(indi,indj,f)/h(indi,indj,f)
+     &      + pCcell(indj)/beta(indi,indj,f)/h(indi,indj,f)!<- Changed in 2020
      &      /capture(indi,indj,f)))
 
 
