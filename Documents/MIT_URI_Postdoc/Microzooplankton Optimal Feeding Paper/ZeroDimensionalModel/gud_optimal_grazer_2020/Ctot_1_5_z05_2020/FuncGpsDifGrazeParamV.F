@@ -310,7 +310,7 @@ c **     Use pparamchoice if want to choose shape of size-depend. of phyto. grow
      &    kBoltz,tmp,pi, 
      &       ks0,ksexp,etatmp, mu, ks, Dp, pm,u,muflag)
 
-
+c       print*,'pCcell in main func = ',pCcell
 c       print*,'pr',pr
 c       print*,'pv',pv
 c       print*,'mu=',mu
