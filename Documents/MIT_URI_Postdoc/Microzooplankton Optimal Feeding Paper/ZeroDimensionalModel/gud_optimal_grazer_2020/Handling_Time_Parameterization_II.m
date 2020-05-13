@@ -35,6 +35,10 @@ set(0,'defaultlinelinewidth',2);
 % radius, length of prey found in table 3, pg. 355
 % handling time in table 2, pg. 353, and includes time for contact,
 % processing, ingestion, and refractory time
+% Handling time is tiem from first contat to resuming of beating of
+% flagella [which I think is correct]
+% This study includes 1 salt water species and 3 freshwater species
+% Temperature is 20 degrees C, pg. 350
 
 predvol_Boenigk = [18.5 25.8 75.4 163];%um^3, Table 1, pg. 351
 predr = (3.*predvol_Boenigk./4./pi).^(1/3);% um, Table 3, pg. 355
@@ -42,7 +46,9 @@ preyr = [2.6 1.7 1.6 1.4]./2;%um
 preyvol_Boenigk = 4/3*pi.*(preyr.^3);%um^3
 h_Boenigk = [94.5 33.2 10.1 3.87];%seconds, mean values for ingested particles
 
-% Value from Fenchel (1982, MEPS, Ecology of heterotrophic microflagellates: 
+t_Boenigk = repmat(20,size(predr));%degrees C
+
+%% Value from Fenchel (1982, MEPS, Ecology of heterotrophic microflagellates: 
 % I. Some important forms and their functional morphology, particularly pg. 214
 % Predator values and handling time from that source. Prey volume taken from 
 % Fenchel (1982, Ecology of heterotrophic micro flagellates: II. Bioenergetics and growth)
@@ -52,11 +58,12 @@ h_Fenchel_h = 20;%seconds
 preyvol_Fenchel_h = 0.6;%um^3, for prey Pseudomonas (pg. 226)
 preyr_Fenchel_h = (3.*preyvol_Fenchel_h./4./pi).^(1/3);% um
 prey_C_Fenchel_h = 10e-10; %mg C/cell for Pseudomonas (pg. 226)
+t_Fenchel_h = repmat(20,size(h_Fenchel_h));%degrees C, pg. 212, using temperature to which cells transferred every few days rather than stock culture temp
 
 %% Jeong et al., 2005, Aquatic Microbial Ecology 40:133-150
 % ***** Actual measurements of handling times (i.e., not based on gmax) for
 % mixotrophic dinoflagellates ********
-% Examined time it took for mixotrophic dinos to completely engule an
+% Examined time it took for mixotrophic dinos to completely engulf an
 % unidentified cryptophyte, which had esd of 5.6 um (pg. 139)
 % Lingulodinium polyedrum (esd 38.2 um, Table 1) took 73 s
 % Prorocentrum donghaiense (esd 13.3, Table 1) took 357 s
@@ -73,6 +80,7 @@ predvol_Jeong = 4/3*pi.*(predrad_Jeong.^3);%um^3
 preyrad_Jeong = 0.5.*[5.6 5.6 5.6 5.6 11.5 12.1 22.8];%um
 preyvol_Jeong = 4/3*pi.*(preyrad_Jeong.^3);%um^3
 h_Jeong = [357 549 629 73 178 293 756];%s
+t_Jeong = repmat(20,size(h_Jeong));%degrees C, pg. 138
 
 %% Jeong et al., 2010, Aquatic Microbial Ecology 59: 239-255
 % Looked at lots of characteristics of Gymnodinium aureolum, a mixotrophic
@@ -87,7 +95,7 @@ h_Jeong = [357 549 629 73 178 293 756];%s
 %** Does point out that, when fed multiple prey one at a time, growth and
 %grazing not significantly correlated with size of prey (Fig. 5)
 h_Jeong2010 = 268+27;%s, to account for tow filament and eating through peduncle
-tmp_Jeong2010 = 20;%degrees C, pg. 240
+t_Jeong2010 = 20;%degrees C, pg. 240
 preyrad_Jeong2010 = 0.5*5.6;%um, Table 1
 preyvol_Jeong2010 = 4/3*pi*(preyrad_Jeong2010^3);%um^3
 
@@ -110,7 +118,7 @@ predrad_Jeong2010 = (3/4/pi*predvol_Jeong2010)^(1/3);%um
 % Dino seems to prefer to engult large prey through the sulcus and smaller
 % prey through the apical horn (pg. 256)
 h_Jeong2005 = (346+291)/2;%s
-tmp_Jeong2005 = 20;%degrees C
+t_Jeong2005 = 20;%degrees C
 preyrad_Jeong2005 = 3.3;%um
 preyvol_Jeong2005 = 4/3*pi*(3.3.^3);%um^3
 predrad_Jeong2005 = 32.5/2;%um
@@ -140,17 +148,20 @@ dinovol = 4/3*pi.*(dinoradius.^3);
 dinoC = (0.76.*(dinovol.^0.819)).*10^-3;%ngC/cell
 dinoh = 1./dinomaxingestion.*dinoC*.24.*3600;%s
 directengulf = [1 7 12 14 15];%indices just for dinoflagellates that feed by direct engulfment
+t_dino = [15 20 20 20 20 20 20 20 20 20 15 20 20 20 20 12 19 19 12];%degrees C
 
-
-% Now values from Verity (1991) Limniology and Oceanography, for the ciliates Tintinnopsis dadayi and
-% Strobilidium spiralis
+%% Now values from Verity (1991) Limniology and Oceanography, for the ciliates Tintinnopsis dadayi and
+% Strobilidium spiralis---NB: I don't think these get used because using
+% values from this source but cited in Hansen et al. (1997) below to be
+% consistent
+% NB: these values are in Hansen et al. (1997) below
 cilC = [1.25*10^4 3.2*10^3];%pg C/ciliate, Tintinnopsis and Strobilidium, respectively, pg. 730
 Tdadavol = 10.^((log10(cilC(1))-0.639)/0.984);%converting using equation for loricate ciliate given in 
     % Menden-Deuer and Lessard (2000)
 Sspirvol = 10.^((log10(cilC(2))-0.168)/0.841);% converting using equation for aloricate ciliate given in 
     % Menden-Deuer and Lessard (2000)
-cilvol = [Tdadavol Sspirvol];%um^3
-cilradius = (cilvol.*3./4./pi).^(1/3);%um
+predvol_Verity = [Tdadavol Sspirvol];%um^3
+cilradius = (predvol_Verity.*3./4./pi).^(1/3);%um
 cilmaxingestion = [0.14  0.14];%1/hour, with data for Tintinnopsis taken from data theif and Fig. 3A
  %For Strobilidum, max ingestions based on single-prey experiments, which didn't differ
  %among different prey species (pg. 734).  The ones measured were for
@@ -163,47 +174,55 @@ cilprey = [8 4.5 3]./2;%um, from Table 2, with the last two for Isochyrsis galba
  cilradius = [cilradius(1) cilradius];
  cilh = 1./[0.14 0.14 0.14].*3600;%s
  cilpredprey = cilradius./cilprey;
- 
+ t_Verity = 20;%degrees C, pg. 731
  
  %% Values from Hansen et al. (1997) and associated sources listed in table 3 to get more emprircal
  % data to try to figure out handling time
  % Predator volumes and max ingestion rates are listed in Hansen et al. (1997), and size of prey
  % are taken directly from the source listed
-%Fenchel (1982) 
+%Fenchel (1982) --different from Fenchel (1982) above
  predvol_Fenchel = [75 20 200 190 50 90];%um^3
- preyvol_Fenchel = 0.6.*ones(size(predvol_Fenchel));%um^3, Fencehl
+ preyvol_Fenchel = 0.6.*ones(size(predvol_Fenchel));%um^3, Fenchel
 maxingest_Fenchel = [0.86 0.81 0.57 0.8 0.65 0.56];%1/hr
+t_Fenchel = repmat(20, size(predvol_Fenchel));%degrees C, Table 3 Hansen et al. 1997
+
 
 %Eccleston-Parry and Leadbeater, 1994 
 % All predators fed same thing
 predvol_Eccleston = [54 220 35 75 212 83];%um^3, from table 3 of Hansen et al
 preyvol_Eccleston = 0.67.*ones(size(predvol_Eccleston));%um^3, Eccelston-Parry
 maxingest_Eccleston = [1.99 0.79 0.69 0.45 0.2 0.3];%1/hr
+t_Eccleston = repmat(20, size(predvol_Eccleston));%degrees C, table 3 Hansen et al. 1997
 
 % Values from Andersen, 1988/1989
 predvol_Andersen = 40;%um^3
 preyvol_Andersen = 0.6;%um^3, Andersen, pg. 525
 maxingest_Andersen = 0.33;%1/h
+t_Andersen = 15;%degrees C, Hansen et al. 1997
 
 % Andersson, 1989
 predvol_Andersson = 50;%um^3
 preyvol_Andersson = 4/3*pi*(mean([0.2 0.9])/2)^3;%um^3, Andersson
 maxingest_Andersson = 0.42;%1/h
+t_Andersson = 20;%degrees C, table 3 Hansen et al. 1997
 
 % Hollen and Boras, 1991
 predvol_Hollen = 65.4;
 preyvol_Hollen = 0.53;%Hollen, pg. 77
 maxingest_Hollen = 0.09;%1/h
+t_Hollen = 25;%degrees C, table 3 Hansen et al. 1997
 
 % Strom, 1991
 predvol_Strom = 900;%um^3
 preyvol_Strom = 4/3*pi*(4.5/2)^3;%um^3, Strom, pg. 104
 maxingest_Strom = 0.112;%1/h, looking at Isochrysis galbana, not Synechococcus
+t_Strom = 12;%degrees C, table 3 Hansen et al. 1997
 
 % Hansen, 1992
 predvol_Hansen92 = 11500;
 preyvol_Hansen92 = 2050;%um^3, Table 1 of Hansen 1992
 maxingest_Hansen92 = 0.17;%1/hr
+t_Hansen92 = 15;%degrees C, table 3 Hansen et al. 1997
 
 % Strom and Buskey, 1993--Already included in data from Jeong et al. (2010)
 % Jeong and Latz, 1994--Already included in data from Jeong et al. (2010)
@@ -215,16 +234,20 @@ maxingest_Hansen92 = 0.17;%1/hr
 predvol_Buskey = 2.1*10^5;%
 maxingest_Buskey = 0.13;%1/h
 preyvol_Buskey = 2050;%um^3, taken from HANSEN 1992, not original sources
+t_Buskey = 20;%degrees C, table 3 Hansen et al. 1997
 
 % Hansen et al., 1991
 predvol_Hansen91 = 9.546*10^4;
 maxingest_Hansen91 = 0.215;%1/h
 preyvol_Hansen91 = 2050;%Table 2, Hansen et al. 1991
+t_Hansen91 = 18;%degrees C, table 3 Hansen et al. 1997
+
 
 % Jonsson, 1986
 predvol_Jonsson = [1.5*10^5 4*10^4];
 maxingest_Jonsson = [0.11 0.11];%1/h
 preyvol_Jonsson = 4/3*pi.*([9.7 7.9]./2).^3;%Table 3 of Jonsson, 1986
+t_Jonsson = [12, 12];%degrees C, table 3 Hansen et al. 1997
 
 % Verity, 1991--one ciliate Strobilidium spiralis had max ingestion when
 % consuming both Isochrysis glabana and Pseudobodo, so will use that ciliate twice
@@ -236,6 +259,7 @@ preyvol_Jonsson = 4/3*pi.*([9.7 7.9]./2).^3;%Table 3 of Jonsson, 1986
 predvol_Verity = [2.65*10^4 2.65*10^4 1.13*10^5];
 maxingest_Verity = [0.189 0.189 0.155];%1/h
 preyvol_Verity = 4/3*pi.*([3 4.5 8]./2).^3;%Table 1 of Verity 1991
+t_Verity = repmat(20,size(predvol_Verity));%degrees C, table 3 Hansen et al. 1997
 
 % Bernard and Rassoulzadegan, 1990
 % According to my notes in "GrazingRateParameters.m" for the Poulin and
@@ -247,6 +271,7 @@ preyvol_Verity = 4/3*pi.*([3 4.5 8]./2).^3;%Table 1 of Verity 1991
 predvol_Bernard = [1*10^4 1*10^4 1*10^4];
 maxingest_Bernard = [0.481 0.391 0.151];%1/h
 preyvol_Bernard = [140 31.12 8.18];% Table 2 Bernard and Rassoulzadegan
+t_Bernard = repmat(22,size(predvol_Bernard));
 
 % Verity 1985--didn't measure size of prey, only C and N content, so not
 % using
@@ -260,6 +285,8 @@ preyvol_Bernard = [140 31.12 8.18];% Table 2 Bernard and Rassoulzadegan
 % particular prey and at high prey concentrations, assuming that is when
 % handling time matters (handling time limited rather than encounter
 % limited)
+% No temperature reported, so no way to temperature correct values and thus
+% cannot use them--blah
 h_Hewett = [0.916 1.212 1.404];% h, Table 2, pg. 1078, for Paramecium aurelia, P. Jenningsi, and P. multimicronucleatum, respectively
 h_Hewett = h_Hewett.*3600;%seconds
 predvol_Hewett = [8.21 12.79 10.6].*10^5;%um^3, taken from Table 6, pg. 1080
@@ -280,6 +307,7 @@ preyr_Jeong_many = [preyrad_Jeong, preyrad_Jeong2010, preyrad_Jeong2005];%um
 predr_Jeong_many = [predrad_Jeong, predrad_Jeong2010, predrad_Jeong2005];%um
 predvol_Jeong_many = [predvol_Jeong,predvol_Jeong2010, predvol_Jeong2005 ];%um^3
 preyvol_Jeong_many = [preyvol_Jeong, preyvol_Jeong2010, preyvol_Jeong2005];%um^3
+t_Jeong_many = [t_Jeong, t_Jeong2010, t_Jeong2005];%degrees C
 
 h_vec = [h_Boenigk, h_Fenchel_h, h_Jeong_many];% seconds, handling time
 h_preyr = [preyr, preyr_Fenchel_h, preyr_Jeong_many];% um, prey radius
@@ -288,13 +316,8 @@ h_predr = [predr, predr_Fenchel_h, predr_Jeong_many];%um, predator radius
 h_preyvol = 4/3*pi.*(h_preyr.^3);%um^3, prey volume
 h_predvol = 4/3*pi.*(h_predr.^3);%um^3, prey volume
 
-% Finding regression
-x_direct_hand = [ones(size(h_predr')) log10(h_predr./h_preyr)'];
-[param_direct_hand, ci_direct_hand resid_direct_hand outlier_direct_hand ...
-    stats_direct_hand]=regress(log10(h_vec)',x_direct_hand);
-coeff_direct_hand = 10.^param_direct_hand(1);%intercept
-exp_direct_hand = param_direct_hand(2);%slope in log space, exponent in linear space
-regress_direct_hand = coeff_direct_hand.*(h_predr./h_preyr).^exp_direct_hand;
+t_handling = [t_Boenigk, t_Fenchel_h, t_Jeong_many];%degrees C
+
 
 %% Putting together handling times based on max ingestion rate
 predvol_Hansen =[predvol_Fenchel predvol_Eccleston predvol_Andersen ...
@@ -312,21 +335,20 @@ maxingest_Hansen = [maxingest_Fenchel maxingest_Eccleston maxingest_Andersen ...
     maxingest_Hansen91 maxingest_Jonsson maxingest_Verity maxingest_Bernard]; 
 h_Hansen = 1./maxingest_Hansen.*3600;%s
 
-h_ingest = [dinoh h_Hansen h_Hewett];%s
-predvol_ingest =[dinovol predvol_Hansen predvol_Hewett];%um^3
-preyvol_ingest = [dinopreyvol preyvol_Hansen preyvol_Hewett];%um^3
+t_Hansen = [t_Fenchel, t_Eccleston,t_Andersen, t_Andersson, t_Hollen,...
+    t_Strom, t_Hansen92, t_Buskey, t_Hansen91, t_Jonsson, t_Verity, t_Bernard]; %degrees C
+
+% h_ingest = [dinoh h_Hansen h_Hewett];%s <-----Hewett didnt' list temperature, so can't use
+% predvol_ingest =[dinovol predvol_Hansen predvol_Hewett];%um^3
+% preyvol_ingest = [dinopreyvol preyvol_Hansen preyvol_Hewett];%um^3
+h_ingest = [dinoh h_Hansen];%s
+predvol_ingest =[dinovol predvol_Hansen];%um^3
+preyvol_ingest = [dinopreyvol preyvol_Hansen];%um^3
+
 predr_ingest = (3/4/pi.*predvol_ingest).^(1/3);% um
 preyr_ingest = (3/4/pi.*preyvol_ingest).^(1/3);%um
 
-
-% Finding regression
-x_ingest = [ones(size(predr_ingest')) log10(predr_ingest./preyr_ingest)'];
-[param_ingest ci_ingest resid_ingest outlier_ingest stats_ingest]=regress(log10(h_ingest)',x_ingest);
-coeff_ingest = 10.^ param_ingest(1);
-exp_ingest = param_ingest(2);
-regress_ingest = coeff_ingest.*(predr_ingest./preyr_ingest).^exp_ingest;
-ppratio_ingest = predr_ingest./preyr_ingest;
-
+t_ingest = [t_dino,t_Hansen];%degrees C
 
 %% Putting together ALL empirical values, based on max ingestion rate AND handling time together
 h_all = [h_vec h_ingest];%s
@@ -337,15 +359,77 @@ preyvol_all = [h_preyvol preyvol_ingest];
 predr_all = (predvol_all.*3./4./pi).^(1/3);%um
 preyr_all = (preyvol_all.*3./4./pi).^(1/3);%um
 
+t_all = [t_handling, t_ingest];%degrees C
 
 pred_prey_ratio_all = predr_all./preyr_all;
 
-% Finding regression
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%% Temperature correction %%%%%%%%%%%%
+
+% Temperature correction using Metabolic Theory of Ecology
+% Based on Chen et al. (2012) L&O and Taniguchi et al. (2014)
+% This code is taken from Documents/Poulin and Franks Model/Parameterization/GrazingRateParameters.m 
+
+%Correcting to 20 degrees C = 293.15 K.  Used regression from Fig. 3A. from Chen et al. (2012), slope of 0.67,
+%specifically for grazing (frowth has different activation energy value)
+
+boltz = 8.62*10^-5;%eV/Kelvin, Boltzmann's constant
+t_corr = 273.15+20;%K, corrected temperature
+E = 0.67;%eV, activation energy for max grazing, from Chen et al. (2012)
+
+% Handling time temp corrections
+coeff_h = h_vec.*exp(E./boltz./(t_handling+273.15));%coefficient for temperature correction
+h_t_corr = coeff_h./exp(E./boltz./t_corr);%seconds
+
+% Max ingestion temp corrections
+coeff_ingest = h_ingest.*exp(E./boltz./(t_ingest+273.15));
+h_ingest_t_corr = coeff_ingest./exp(E./boltz./t_corr);%s
+
+% All rate temperature corrections
+coeff_all = h_all.*exp(E./boltz./(t_all+273.15));
+h_all_t_corr = coeff_all./exp(E./boltz./t_corr);%s
+
+% Select groupings for purposes of plotting below
+coeff_dino = dinoh.*exp(E./boltz./(t_dino+273.15));
+dino_h_t_corr = coeff_dino./exp(E./boltz./t_corr);%s
+coeff_Hansen = h_Hansen.*exp(E./boltz./(t_Hansen+273.15));
+h_Hansen_t_corr = coeff_Hansen./exp(E./boltz./t_corr);%seconds
+coeff_Boenigk=h_Boenigk.*exp(E./boltz./(t_Boenigk+273.15));
+h_Boenigk_t_corr = coeff_Boenigk./exp(E./boltz./t_corr);%seconds
+coeff_Fenchel_h = h_Fenchel_h.*exp(E./boltz./(t_Fenchel_h+273.15));
+h_Fenchel_h_t_corr = coeff_Fenchel_h./exp(E./boltz./t_corr);%s
+coeff_Jeong_many = h_Jeong_many.*exp(E./boltz./(t_Jeong_many+273.15));
+h_Jeong_many_t_corr = coeff_Jeong_many./exp(E./boltz./t_corr);%s
+
+
+
+%% Finding regressions
+
+% Regression for handling time based on direct measurements of handling time
+x_direct_hand = [ones(size(h_predr')) log10(h_predr./h_preyr)'];
+[param_direct_hand, ci_direct_hand resid_direct_hand outlier_direct_hand ...
+    stats_direct_hand]=regress(log10(h_t_corr)',x_direct_hand);
+coeff_direct_hand = 10.^param_direct_hand(1);%intercept
+exp_direct_hand = param_direct_hand(2);%slope in log space, exponent in linear space
+regress_direct_hand = coeff_direct_hand.*(h_predr./h_preyr).^exp_direct_hand;
+
+
+% Regression for handling time based on inverse of max ingestion rates
+x_ingest = [ones(size(predr_ingest')) log10(predr_ingest./preyr_ingest)'];
+[param_ingest ci_ingest resid_ingest outlier_ingest stats_ingest]=regress(log10(h_ingest_t_corr)',x_ingest);
+coeff_ingest = 10.^ param_ingest(1);
+exp_ingest = param_ingest(2);
+regress_ingest = coeff_ingest.*(predr_ingest./preyr_ingest).^exp_ingest;
+ppratio_ingest = predr_ingest./preyr_ingest;
+
+% Regression for handing time based on all values
 x_all = [ones(size(predr_all')) log10(predr_all./preyr_all)'];
-[param_all ci_all resid_all outlier_all stats_all] = regress(log10(h_all)',x_all);
+[param_all ci_all resid_all outlier_all stats_all] = regress(log10(h_all_t_corr)',x_all);
 coeff_all = 10.^param_all(1);
 exp_all = param_all(2);
 regress_all = coeff_all.*(predr_all./preyr_all).^exp_all;
+
 
 
 %% %%%%%%%%%%%%%%%%%%% Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -353,7 +437,7 @@ regress_all = coeff_all.*(predr_all./preyr_all).^exp_all;
 % Plotting based on DIRECT MEASUREMENTS OF HANDLING TIME 
 % Handling time
 figure
-loglog(h_predr./h_preyr,h_vec,'*','MarkerSize',20)
+loglog(h_predr./h_preyr,h_t_corr,'*','MarkerSize',20)
 hold on
 loglog(h_predr./h_preyr, regress_direct_hand,'-','LineWidth',10)
 legend('direct handling time measurements','linear regression','Location','SouthWest')
@@ -365,8 +449,8 @@ ylabel('handling time, seconds')
 nlx = [ones(size(h_predr)); h_predr./h_preyr]';
 lx = [ones(size(h_predr)); log(h_predr./h_preyr)]';
     
-[nlparam, nlint, nlr, nlrint, nlstats] = regress(h_vec',nlx);
-[lparam, lint, lr, lrint, lstats] = regress(log(h_vec)', lx);
+[nlparam, nlint, nlr, nlrint, nlstats] = regress(h_t_corr',nlx);
+[lparam, lint, lr, lrint, lstats] = regress(log(h_t_corr)', lx);
 
 
 % Can compare fits for the log data (lparam) and for nonlog data (nlparam)
@@ -374,6 +458,8 @@ lx = [ones(size(h_predr)); log(h_predr./h_preyr)]';
 % if that's better
 ppratio = predr./preyr;
 htestnew = 10^(lparam(1)).*(ppratio).^lparam(2);
+
+
 
 % htestnewII = htestnew;
 % htestnewII(ppratio<=0.4) = 0;
@@ -391,32 +477,32 @@ htestnew = 10^(lparam(1)).*(ppratio).^lparam(2);
 %% Plotting handling times JUST based off of MAX INGESTION RATES
 
 figure(11);clf
-loglog(predr_ingest./preyr_ingest,h_ingest,'+b')
+loglog(predr_ingest./preyr_ingest,h_ingest_t_corr,'+b')
 hold on
 loglog(predr_ingest./preyr_ingest,regress_ingest,'-','LineWidth',10)
 hold on
 %Dinos
 % loglog(dinovol./dinopreyvol, dinoh,'xr')
-loglog(dinoradius./dinopreyradius, dinoh,'xr')
+loglog(dinoradius./dinopreyradius, dino_h_t_corr,'xr')
 hold on
 % Mostly ciliates and nanoflagellates
 % loglog(predvol_Hansen./preyvol_Hansen, h_Hansen,'db')
-loglog(predr_Hansen./preyr_Hansen, h_Hansen,'db')
+loglog(predr_Hansen./preyr_Hansen, h_Hansen_t_corr,'db')
 
 % Ciliate from Hewett
 % loglog(predvol_Hewett./preyvol_Hewett, h_Hewett,'+m')
-loglog(predr_Hewett./preyr_Hewett, h_Hewett,'+m')
+% loglog(predr_Hewett./preyr_Hewett, h_Hewett,'+m')
 
 % Direct engulfment dinoflagellates
 directengulf = [1 7 12 14 15];%indices just for dinoflagellates that feed by direct engulfment
 % loglog(dinovol(directengulf)./dinopreyvol(directengulf), dinoh(directengulf),'ok','MarkerSize',20)
-loglog(dinoradius(directengulf)./dinopreyradius(directengulf), dinoh(directengulf),'ok','MarkerSize',20)
+loglog(dinoradius(directengulf)./dinopreyradius(directengulf), dino_h_t_corr(directengulf),'ok','MarkerSize',20)
 
 hold on
 % xlabel('pred vol/preyvol')
 xlabel('pred radius/prey radius')
 ylabel('handling time, seconds')
-legend('all','regression','dinoflagellates','mostly ciliates and flagellates','ciliate','direct engulf dino','Location','SouthEast')
+legend('all','regression','dinoflagellates','mostly ciliates and flagellates','direct engulf dino','Location','SouthEast')
 legend('boxoff')
 title('Handling time based off max ingestion')
 
@@ -424,14 +510,13 @@ title('Handling time based off max ingestion')
 %% Plotting of all handling times, direct and derived
 figure(10);clf
 % loglog(pred_prey_ratio_all,h_all,'oc')
-loglog(pred_prey_ratio_all,h_all,'oc')
+loglog(pred_prey_ratio_all,h_all_t_corr,'oc')
 xlabel('pred radius/prey radius')
 ylabel('handling time, seconds')
 
 hold on
 loglog(pred_prey_ratio_all,regress_all,'-k','LineWidth',10)
 title('All Handling Times, from inverse max ingestion and direct handling measurements')
-
 
 %% Comparison of handling time based on max ingestion and actual measurements vs. just max ingestion, for func groups
 % Includes delineation among functional groups
@@ -440,21 +525,23 @@ title('All Handling Times, from inverse max ingestion and direct handling measur
 figure(14);clf
 %Flagellates
 % loglog([predvol_Boenigk./preyvol_Boenigk predvol_Hansen(1:15)./preyvol_Hansen(1:15), predvol_Fenchel_h./preyvol_Fenchel_h],[h_Boenigk, h_Hansen(1:15),h_Fenchel_h],'+b','MarkerSize',10,'LineWidth',5)
-loglog([predr./preyr predr_Hansen(1:15)./preyr_Hansen(1:15), predr_Fenchel_h./preyr_Fenchel_h],[h_Boenigk, h_Hansen(1:15),h_Fenchel_h],'+b','MarkerSize',10,'LineWidth',5)
+loglog([predr./preyr predr_Hansen(1:15)./preyr_Hansen(1:15), predr_Fenchel_h./preyr_Fenchel_h],...
+    [h_Boenigk_t_corr, h_Hansen_t_corr(1:15),h_Fenchel_h_t_corr],'+b','MarkerSize',10,'LineWidth',5)
 
 hold on
 %Dinoflagellates
 % loglog([dinovol./dinopreyvol predvol_Hansen(16:17)./preyvol_Hansen(16:17),predvol_Jeong_many./preyvol_Jeong_many],[dinoh, h_Hansen(16:17),h_Jeong_many],'xr','MarkerSize',10,'LineWidth',5)
-loglog([dinoradius./dinopreyradius predr_Hansen(16:17)./preyr_Hansen(16:17),predr_Jeong_many./preyr_Jeong_many],[dinoh, h_Hansen(16:17),h_Jeong_many],'xr','MarkerSize',10,'LineWidth',5)
+loglog([dinoradius./dinopreyradius predr_Hansen(16:17)./preyr_Hansen(16:17),predr_Jeong_many./preyr_Jeong_many],...
+    [dino_h_t_corr, h_Hansen_t_corr(16:17),h_Jeong_many_t_corr],'xr','MarkerSize',10,'LineWidth',5)
 
 hold on
 %Ciliates
 % loglog([predvol_Hansen(18:end)./preyvol_Hansen(18:end) predvol_Hewett./preyvol_Hewett],[h_Hansen(18:end), h_Hewett],'oc','MarkerSize',10,'LineWidth',5)
-loglog([predr_Hansen(18:end)./preyr_Hansen(18:end) predr_Hewett./preyr_Hewett],[h_Hansen(18:end), h_Hewett],'oc','MarkerSize',10,'LineWidth',5)
+loglog([predr_Hansen(18:end)./preyr_Hansen(18:end)],[h_Hansen_t_corr(18:end)],'oc','MarkerSize',10,'LineWidth',5)
 
 % Highlighting actual measurements of handling time
 hold on
-loglog(h_predr./ h_preyr,h_vec,'ok','MarkerSize',20,'LineWidth',3)
+loglog(h_predr./ h_preyr,h_t_corr,'ok','MarkerSize',20,'LineWidth',3)
 % loglog(predvol_Jeong_many./preyvol_Jeong_many,h_Jeong_many,'or','MarkerSize',20)
 % loglog(predvol_Boenigk./preyvol_Boenigk,h_Boenigk,'og','MarkerSize',20)
 % loglog(predvol_Fenchel_h./preyvol_Fenchel_h, h_Fenchel_h,'ob','MarkerSize',20)
@@ -476,16 +563,18 @@ legend('boxoff')
 % INVERSE OF handling time 
 figure(15);clf
 %Flagellates
-loglog([predr./preyr predr_Hansen(1:15)./preyr_Hansen(1:15), predr_Fenchel_h./preyr_Fenchel_h],[1./h_Boenigk, 1./h_Hansen(1:15),1./h_Fenchel_h],'+b','MarkerSize',10,'LineWidth',5)
+loglog([predr./preyr predr_Hansen(1:15)./preyr_Hansen(1:15), predr_Fenchel_h./preyr_Fenchel_h],...
+    [1./h_Boenigk_t_corr, 1./h_Hansen_t_corr(1:15),1./h_Fenchel_h_t_corr],'+b','MarkerSize',10,'LineWidth',5)
 hold on
 %Dinoflagellates
-loglog([dinoradius./dinopreyradius predr_Hansen(16:17)./preyr_Hansen(16:17),predr_Jeong_many./preyr_Jeong_many],[1./dinoh, 1./h_Hansen(16:17),1./h_Jeong_many],'xr','MarkerSize',10,'LineWidth',5)
+loglog([dinoradius./dinopreyradius predr_Hansen(16:17)./preyr_Hansen(16:17),predr_Jeong_many./preyr_Jeong_many],...
+    [1./dino_h_t_corr, 1./h_Hansen_t_corr(16:17),1./h_Jeong_many_t_corr],'xr','MarkerSize',10,'LineWidth',5)
 hold on
 %Ciliates
-loglog([predr_Hansen(18:end)./preyr_Hansen(18:end) predr_Hewett./preyr_Hewett],[1./h_Hansen(18:end), 1./h_Hewett],'oc','MarkerSize',10,'LineWidth',5)
+loglog([predr_Hansen(18:end)./preyr_Hansen(18:end)],[1./h_Hansen_t_corr(18:end)],'oc','MarkerSize',10,'LineWidth',5)
 % Highlighting actual measurements of handling time
 hold on
-loglog(h_predr./ h_preyr,1./h_vec,'ok','MarkerSize',20,'LineWidth',3)
+loglog(h_predr./ h_preyr,1./h_t_corr,'ok','MarkerSize',20,'LineWidth',3)
 % xlabel('predvol/prey volume')
 xlabel('pred radius/prey radius')
 ylabel('1/handling time, 1/seconds')
@@ -509,8 +598,9 @@ title('Handling Time Based on Max Ingestion for Same Sources')
 
 %% Handling time vs. predator size
 
+% All values combined
 x_predsize =  [ones(size(predr_all')), log10(predr_all)'];
-[param_size, ci_size, resid_size, outlier_size, stats_size] = regress(log10(h_all)', x_predsize);
+[param_size, ci_size, resid_size, outlier_size, stats_size] = regress(log10(h_all_t_corr)', x_predsize);
 coeff_predsize = 10.^param_size(1);
 exp_predsize = param_size(2);
 regress_predsize = coeff_predsize.*predr_all.^exp_predsize;
@@ -521,14 +611,14 @@ num_ingest = length(h_ingest);
 % Regression based on max ingestion
 ingest_ind = num_h+1;
 x_predsize2 =  [ones(size(predr_ingest')), log10(predr_ingest)'];
-[param_size2, ci_size2, resid_size2, outlier_size2, stats_size2] = regress(log10(h_ingest)', x_predsize2);
+[param_size2, ci_size2, resid_size2, outlier_size2, stats_size2] = regress(log10(h_ingest_t_corr)', x_predsize2);
 coeff_predsize2 = 10.^param_size2(1);
 exp_predsize2 = param_size2(2);
 regress_predsize2 = coeff_predsize2.*predr_ingest.^exp_predsize2;
 
 % Regression based on handling time only
 x_predsize3 =  [ones(size(h_predr')), log10(h_predr)'];
-[param_size3, ci_size3, resid_size3, outlier_size3, stats_size3] = regress(log10(h_vec)', x_predsize3);
+[param_size3, ci_size3, resid_size3, outlier_size3, stats_size3] = regress(log10(h_t_corr)', x_predsize3);
 coeff_predsize3 = 10.^param_size3(1);
 exp_predsize3 = param_size3(2);
 regress_predsize3 = coeff_predsize3.*h_predr.^exp_predsize3;
@@ -537,17 +627,18 @@ regress_predsize3 = coeff_predsize3.*h_predr.^exp_predsize3;
 figure(17);clf
 %Flagellates
 % loglog([predvol_Boenigk, predvol_Hansen(1:15), predvol_Fenchel_h],[h_Boenigk, h_Hansen(1:15),h_Fenchel_h],'+b','MarkerSize',10,'LineWidth',5)
-loglog([predr, predr_Hansen(1:15), predr_Fenchel_h],[h_Boenigk, h_Hansen(1:15),h_Fenchel_h],'+b','MarkerSize',10,'LineWidth',5)
+loglog([predr, predr_Hansen(1:15), predr_Fenchel_h],[h_Boenigk_t_corr, h_Hansen_t_corr(1:15),h_Fenchel_h_t_corr],'+b','MarkerSize',10,'LineWidth',5)
 
 hold on
 %Dinoflagellates
-loglog([dinoradius, predr_Hansen(16:17),predr_Jeong_many],[dinoh, h_Hansen(16:17),h_Jeong_many],'xr','MarkerSize',10,'LineWidth',5)
+loglog([dinoradius, predr_Hansen(16:17),predr_Jeong_many],...
+    [dino_h_t_corr, h_Hansen_t_corr(16:17),h_Jeong_many_t_corr],'xr','MarkerSize',10,'LineWidth',5)
 hold on
 %Ciliates
-loglog([predr_Hansen(18:end) predr_Hewett],[h_Hansen(18:end), h_Hewett],'oc','MarkerSize',10,'LineWidth',5)
+loglog([predr_Hansen(18:end)],[h_Hansen_t_corr(18:end)],'oc','MarkerSize',10,'LineWidth',5)
 % Highlighting actual measurements of handling time
 hold on
-loglog(h_predr,h_vec,'ok','MarkerSize',20,'LineWidth',3)
+loglog(h_predr,h_t_corr,'ok','MarkerSize',20,'LineWidth',3)
 % Regression for all points
 hold on; loglog(predr_all,regress_predsize,'-k','LineWidth',5)
 % Regression based on values from max ingestion rate
@@ -570,7 +661,7 @@ title('Handling Time vs. Predator Size')
 
 % Handling time direct measurements, just based on predator, not prey
 figure
-loglog(h_predr, h_vec,'d','MarkerSize',20)
+loglog(h_predr, h_t_corr,'d','MarkerSize',20)
 % xlabel('consumer volume, \mum^3')
 xlabel('consumer radius, \mum')
 ylabel('handling time, seconds')
@@ -578,7 +669,7 @@ ylabel('handling time, seconds')
 % Inverse handling time, based on predator only and direct measurements of
 % handling
 figure
-loglog(h_predr, 1./h_vec,'d','MarkerSize',20)
+loglog(h_predr, 1./h_t_corr,'d','MarkerSize',20)
 % xlabel('consumer volume, \mum^3')
 xlabel('consumer radius, \mum')
 ylabel('1/handling time, 1/seconds')
@@ -587,17 +678,19 @@ ylabel('1/handling time, 1/seconds')
 figure
 %Flagellates
 % loglog([predvol_Boenigk, predvol_Hansen(1:15), predvol_Fenchel_h],[1./h_Boenigk, 1./h_Hansen(1:15),1./h_Fenchel_h],'+b','MarkerSize',10,'LineWidth',5)
-loglog([predr, predr_Hansen(1:15), predr_Fenchel_h],[1./h_Boenigk, 1./h_Hansen(1:15),1./h_Fenchel_h],'+b','MarkerSize',10,'LineWidth',5)
+loglog([predr, predr_Hansen(1:15), predr_Fenchel_h],...
+    [1./h_Boenigk_t_corr, 1./h_Hansen_t_corr(1:15),1./h_Fenchel_h_t_corr],'+b','MarkerSize',10,'LineWidth',5)
 hold on
 %Dinoflagellates
 % loglog([dinovol, predvol_Hansen(16:17),predvol_Jeong_many],[1./dinoh, 1./h_Hansen(16:17),1./h_Jeong_many],'xr','MarkerSize',10,'LineWidth',5)
-loglog([dinoradius, predr_Hansen(16:17),predr_Jeong_many],[1./dinoh, 1./h_Hansen(16:17),1./h_Jeong_many],'xr','MarkerSize',10,'LineWidth',5)
+loglog([dinoradius, predr_Hansen(16:17),predr_Jeong_many],...
+    [1./dino_h_t_corr, 1./h_Hansen_t_corr(16:17),1./h_Jeong_many_t_corr],'xr','MarkerSize',10,'LineWidth',5)
 hold on
 %Ciliates
-loglog([predr_Hansen(18:end) predr_Hewett],[1./h_Hansen(18:end), 1./h_Hewett],'oc','MarkerSize',10,'LineWidth',5)
+loglog([predr_Hansen(18:end)],[1./h_Hansen_t_corr(18:end)],'oc','MarkerSize',10,'LineWidth',5)
 % Highlighting actual measurements of handling time
 hold on
-loglog(h_predr,1./h_vec,'ok','MarkerSize',20,'LineWidth',3)
+loglog(h_predr,1./h_t_corr,'ok','MarkerSize',20,'LineWidth',3)
 % xlabel('predvol, \mum^3')
 xlabel('pred radius, \mum')
 ylabel('1/handling time, 1/seconds')
