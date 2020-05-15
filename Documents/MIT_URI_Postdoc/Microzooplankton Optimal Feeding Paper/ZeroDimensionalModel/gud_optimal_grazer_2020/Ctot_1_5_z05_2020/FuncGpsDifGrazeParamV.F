@@ -33,7 +33,9 @@ c ***** swimspeed.f
 
 
 
-c ** directory for this code is: cd /Users/dtaniguchi/Documents/MIT_URI_Postdoc/Grazer_Community_from_First_Principles/Functional_Groups_Fortran_Code/FuncGpsTypes
+c ** directory for this original code is: cd /Users/dtaniguchi/Documents/MIT_URI_Postdoc/Grazer_Community_from_First_Principles/Functional_Groups_Fortran_Code/FuncGpsTypes
+c ** Current directory is: 
+c ** cd //Users/dtaniguchi/Documents/MIT_URI_Postdoc/Microzooplankton Optimal Feeding Paper/ZeroDimensionalModel/gud_optimal_grazer_2020/Ctot_1_5_z05_2020
 
 c *** This is what should type into terminal (since I still cannot figure out makefiles):
 c gfortran pparamchoice.f psize.f pccount.f zCcountTypes.f zsize.f zparamtypes.f EncounterKernelTypes.f handlingIII.f GrazingRateChoiceIV.f pzchangeII.f ClearanceRate.f captureEfficiency.f swimspeed.f funcgpsdifgrazeparamV.f -o Ctot_1_5_z05_2020.exe
