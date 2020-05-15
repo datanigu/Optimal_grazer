@@ -64,7 +64,7 @@ c            print*,'ind2',ind2
       do 375 jjj = 1, znumf(lll) !each row is different predator
           ind2 = ind1 + jjj -1
          do 475 kkkk = 1, pnum ! each column is different prey
-         h(ind2,kkkk,lll) = 3600.0*(zrmx(ind2,lll)/pr(kkkk))**(-1.272)
+         h(ind2,kkkk,lll) = 382.981*(zrmx(ind2,lll)/pr(kkkk))**(-1.006)
 475      continue 
 375   continue 
 275   continue
