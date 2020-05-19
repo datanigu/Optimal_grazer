@@ -14,7 +14,7 @@ c *** Defining variables
       real*8 minind(fnum)
       real*8 maxind(fnum)
        
-      real*8 gmax(zmax,fnum)
+      real*8 gmax(zmax,pnum,fnum)
       real*8 zCcell(zmax,fnum)
       real*8 pCcell(pnum)
       real*8 zrmx(zmax,fnum)
@@ -41,7 +41,7 @@ c         print*,'ind1',ind1
           ind2 = ind1 + j -1
 c            print*,'ind2',ind2
          do 400 k = 1, pnum ! each column is different prey
-          h(ind2,k,l) = 1/gmax(ind2,l)*( pCcell(k)/zCcell(ind2,l) )  
+          h(ind2,k,l) = 1/gmax(ind2,k,l)*( pCcell(k)/zCcell(ind2,l) )  
 400      continue 
 300   continue 
 200   continue
