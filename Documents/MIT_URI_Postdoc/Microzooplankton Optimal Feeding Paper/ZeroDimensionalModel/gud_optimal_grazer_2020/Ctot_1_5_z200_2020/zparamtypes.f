@@ -1,6 +1,6 @@
 c ******** Grazer physiological and associated parameters ************
 
-        subroutine zparamtypes(fnum,zmax,znumf,zrmx,zvmx,pi,
+        subroutine zparamtypes(fnum,zmax,znumf,zrmx,zvmx,pi,pnum,pr,
      &   minind, maxind,tmp,etatmp,
      &   gtmpcoeff, gmaxexp,gE,kBoltz,
      &   bodylengths,functype,
@@ -16,11 +16,13 @@ c Declaring variables
        real*8 zrmx(zmax,fnum)! radius, m
        real*8 zvmx(zmax,fnum)! volume, m^3
        double precision pi !pi
+       integer pnum !number of phytoplankton size groups
+       real*8 pr(pnum) !phytoplankton radius, m
        real*8 minind(fnum)!index of min size class out of all size classes
        real*8 maxind(fnum) ! max number of size classes out of all classes
        real*8 v(zmax,fnum)!swimming speeds
        real*8 Dz(zmax,fnum) !diffusion coefficient for grazers
-       real*8 gmax(zmax,fnum) ! max grazing rate , 1/s
+       real*8 gmax(zmax,pnum,fnum) ! max grazing rate , 1/s
        real*8 gE !grazing activation energy, eV
        real*8 gmax0 !max grazing coefficient includng temperature-dep
        real*8 gtmpcoeff ! max grazing coeff not including temp-dep
@@ -46,7 +48,7 @@ c                      3 = generic microzoopl)
 
        integer q,st !indices for do loops
        integer ind1, ind2 !for use in indexing WITHIN loop
-       integer di, ci, gi !for loops
+       integer di, ci, gi, gp_i, dp_i, cp_i !for loops
 
 
 
@@ -61,9 +63,10 @@ c         print*,'ending index',ind2
 c ************** Dinoflagellate ***********************
         if (functype(q) .eq. 1) then !dino
         do 501 di= ind1,ind2
+         do 5011 dp_i = 1,pnum
 
 c *** grazing
-          gmax(di,q) = (0.178*(2.0*zrmx(di,q)*10.0**6.0)+2.89)
+          gmax(di,dp_i,q) = (0.178*(2.0*zrmx(di,q)*10.0**6.0)+2.89)
      &          *(10.0**(-9.0))/24.0/3600.0/zCcell(di,q)
 c *** Swimming speed
               if (swimregflag(q) .eq. 1) then !use regression equation
@@ -72,14 +75,17 @@ c *** Swimming speed
               else !swim speed based on multiple of body lengths
           v(di,q) = zrmx(di,q)*2.0*bodylengths(q)
               end if !swimregflag
+5011    continue
 501     continue
 
 
 c ************** Ciliate *******************
        elseif (functype(q) .eq. 2) then !ciliate
         do 502 ci = ind1,ind2
+         do 5021 cp_i = 1,pnum
 c *** grazing
-         gmax(ci,q)=(10.0**0.1)/3600.0*(zvmx(ci,q)*10.0**18)**(-0.2)
+         gmax(ci,cp_i,q)=(10.0**0.1)/3600.0*
+     &    (zvmx(ci,q)*10.0**18)**(-0.2)
 c **** swimming
               if (swimregflag(q) .eq. 1) then
          v(ci,q) = (127.1603*(zvmx(ci,q)*10.0**18.0)**0.1656)
@@ -87,6 +93,7 @@ c **** swimming
               else
           v(ci,q) = zrmx(ci,q)*2.0*bodylengths(q)
               end if !swimregflag
+5021     continue
 502      continue
 
 
@@ -94,10 +101,13 @@ c **** swimming
 c ***************** Generic microzooplankton ************
         elseif (functype(q). eq. 3) then !generic microzooplankton
            do 503 gi = ind1,ind2
+            do 504 gp_i = 1,pnum
 c *** Grazing
-          gmax(gi,q) = gtmpcoeff*((2.0*zrmx(gi,q)*(10**6))**gmaxexp)
-     &   *exp(-gE/kBoltz/(tmp+273.15)) 
-     &   /24.0/3600.0
+c          gmax(gi,q) = gtmpcoeff*((2.0*zrmx(gi,q)*(10**6))**gmaxexp)
+c     &   *exp(-gE/kBoltz/(tmp+273.15)) 
+c     &   /24.0/3600.0
+           gmax(gi,gp_i,q) = 0.0035*((zrmx(gi,q)/pr(gp_i))** (-1.9431)) 
+504       continue
 c *** Swimming
           v(gi,q) = zrmx(gi,q)*2.0*bodylengths(q)
 503       continue 

@@ -39,7 +39,7 @@ c    track of the grazing rate and the prey size class grazed
       real*8 zCsize(zmax,fnum)
       real*8 beta(zmax,pnum,fnum)
       real*8 h(zmax,pnum,fnum)
-      real*8 gmax(zmax,fnum)
+      real*8 gmax(zmax,pnum,fnum)
       real*8 clearance(zmax,pnum,fnum)
       real*8 capture(zmax,pnum,fnum)!capture probability
       real*8 gpressure(zmax,pnum)! grazing rate
@@ -119,7 +119,7 @@ c        print*,'pCsize',pCsize
       if (grazeflag1 .eq. 1) then ! size class based on actual highest intake
       do 700 i=ind1,ind2
        do 800 j=1,pnum
-         gtemp(i,j) = 1/h(i,j,f)*(pCsize(j)/(pCsize(j) 
+         gtemp(i,j) = gmax(i,j,f)*(pCsize(j)/(pCsize(j) !<--Changed in 2020, too
 c     &      + zCcell(i,f)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))
      &      + pCcell(j)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))!<- This is what changed in 2020
 800    continue
@@ -138,7 +138,7 @@ c          print*,'grazed size class chosen by clearance'
         do 775 i = ind1,ind2
            do 875 j = 1,pnum
               if (j .eq. prefpreyclass(f)) then
-         gtemp(i,j) = 1/h(i,j,f)*(pCsize(j)/(pCsize(j) 
+         gtemp(i,j) = gmax(i,j,f)*(pCsize(j)/(pCsize(j) !<--Changed in 2020, too
 c     &      + zCcell(i,f)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))
      &      + pCcell(j)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))!<- This is what changed in 2020
               else
