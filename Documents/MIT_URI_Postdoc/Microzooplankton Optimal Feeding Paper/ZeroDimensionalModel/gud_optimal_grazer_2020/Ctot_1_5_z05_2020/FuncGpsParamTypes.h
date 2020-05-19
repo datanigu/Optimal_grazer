@@ -81,7 +81,7 @@ c            based on just prey size or predator + prey size
       real*8 gtmpcoeff ! max grazing coeff not including temp-dep
       real*8 gmaxexp !max grazing exponent 
       real*8 gE ! grazing activation energy, eV
-      real*8 gmax(zmax,fnum) !max grazing rate, 1/s
+      real*8 gmax(zmax,pnum,fnum) !max grazing rate, 1/s
       real*8 g(zmax,fnum) ! grazing rate not multiplied by grazer biomass, 1/s
       real*8 zm0(fnum) !basal mortality rate (i.e., not due to swimming), 1/s      
       real*8 zm(zmax,fnum)! 1/s, total grazing mortality, from swimming and basal 

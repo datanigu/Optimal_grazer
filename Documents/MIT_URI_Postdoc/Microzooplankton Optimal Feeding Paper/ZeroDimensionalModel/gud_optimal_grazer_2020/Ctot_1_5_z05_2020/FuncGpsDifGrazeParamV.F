@@ -242,7 +242,7 @@ c      zm0(3) = 0.05/24./3600
        capexp(1) = 3.0
 c       capexp(2) = 3.0
 
-       bodylengths(1) = 20.0!only important if swimregflag =2
+       bodylengths(1) = 10.0!20.0!only important if swimregflag =2
 c       bodylengths(2) = 10.0
 
        chi (1) = 0.1 !min swim speed is this fractional value of max swim speed
@@ -361,7 +361,7 @@ c       print*,'exp(gE/(273+tmp)/kBoltz)',exp(gE/(273.15+tmp)/kBoltz)
 c      print*,'zrmx',zrmx
 
 c *** Calculating pysiological parameters
-        call zparamtypes(fnum,zmax,znumf,zrmx,zvmx,pi,
+        call zparamtypes(fnum,zmax,znumf,zrmx,zvmx,pi,pnum,pr,
      &   minind, maxind,tmp,etatmp,
      &   gtmpcoeff, gmaxexp,gE,kBoltz,
      &   bodylengths,functype,

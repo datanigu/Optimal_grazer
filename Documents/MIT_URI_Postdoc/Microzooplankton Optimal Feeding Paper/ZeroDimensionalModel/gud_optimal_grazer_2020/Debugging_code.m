@@ -209,7 +209,7 @@ captureprob = (1-y./(y+x)).^3;%dimensionless
 % captureprob = (1-pradius/(pradius+zradius))^3;
 
 %bodylength = 20;%number of body lengths swim/second
-bodylength = 3;%number of body lengths swim/second
+bodylength = 10;%number of body lengths swim/second
 eta = 1.1385e-6;%dynamic viscosity, g/um/s, taken from gud_tempfunc.F, which
     % should hopefully match etatmp below, but 10^6 times larger (note units)
 
