@@ -239,7 +239,7 @@ c      zm0(3) = 0.05/24./3600
        capexp(1) = 3.0
 c       capexp(2) = 3.0
 
-       bodylengths(1) = 10.0!20.0!only important if swimregflag =2
+       bodylengths(1) = 20.0!10.0!only important if swimregflag =2
 c       bodylengths(2) = 10.0
 
        chi (1) = 0.1 !min swim speed is this fractional value of max swim speed
