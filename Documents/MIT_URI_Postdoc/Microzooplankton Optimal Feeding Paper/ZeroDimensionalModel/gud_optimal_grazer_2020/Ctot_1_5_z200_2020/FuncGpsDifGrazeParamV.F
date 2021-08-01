@@ -688,6 +688,7 @@ c ** grazer biomass, and which size class grazed
 
         pchangetemp1 = pchangetemp2
         Cdischangetemp = Ctot - sum(pchangetemp2) - Ctemp
+        Cdischangetemp = max(Cdischangetemp, 10.0**(-20.0))!prevents dissolved nutrients from being negative
 
 
 

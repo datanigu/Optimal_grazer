@@ -684,6 +684,14 @@ c ** grazer biomass, and which size class grazed
 
         pchangetemp1 = pchangetemp2
         Cdischangetemp = Ctot - sum(pchangetemp2) - Ctemp
+        Cdischangetemp = max(Cdischangetemp, 10.0**(-20.0))!prevents dissolved nutrients from being negative
+
+c         print*, 'sum(pchangetemp2)',sum(pchangetemp2)
+c         print*, 'pchangetemp2',pchangetemp2
+c         print*, 'Ctemp',Ctemp
+c         print*,'Cdischangetemp',Cdischangetemp
+c         print*, 'zchangetemp1(1,1)', zchangetemp1(1,1)
+c         print*,'t',t
 
 
 
@@ -697,7 +705,7 @@ c         print*,'mod(t, savestep)',mod(tnum, savestep)
 c         Cdischange(tcount) = Ctot - sum(pchangetemp2) - Ctemp
           Cdischange(tcount) = Cdischangetemp
 
-c          print*,'Cdischange(tcount)',Cdischange(tcount)
+c         print*,'Cdischange(tcount)',Cdischange(tcount)
 c         print*,'tcount',tcount
 
           do 4004 iiii = 1,fnum

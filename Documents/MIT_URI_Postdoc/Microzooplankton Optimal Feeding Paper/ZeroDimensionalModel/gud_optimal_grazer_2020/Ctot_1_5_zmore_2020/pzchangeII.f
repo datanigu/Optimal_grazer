@@ -73,27 +73,44 @@ c ********** Governing equations of model **************** c
 
 c ** Calculating biomass values at new time step
        do 130 i = 1,pnum
+
+         ptemp(i) = max(ptemp(i), 10.0**(-20.0))! prevents ptemp from being negative
+
           ptemp2(i)  = ptemp(i)+ 
      &       (ptemp(i) * 
      &       (mu(i)*Cdis/(Cdis + ks(i)) - pm(i)) -
      &       gprey(i) )*dt
+
+       ptemp2(i) = max(ptemp2(i),10.0**(-20.0))! prevents ptemp2 from being negative
 130    continue
 
 
       if (mortalityflag .eq. 1) then ! linear grazer mortality
       do 140 k=1,fnum
           do 150 j = 1,zmax
+
+          ztemp(j,k) = max(ztemp(j,k), 10.0**(-20.0))! prevents ztemp from being negative
+
           ztemp2(j,k) = ztemp(j,k) + 
      &        (ztemp(j,k)*(-zm(j,k) - R(j,k)) + zgamma*ggrazer(j,k))*dt
+
+          ztemp2(j,k) = max(ztemp2(j,k), 10.0**(-20.0))! prevents ztemp2 from being negative
+
 150       continue
 140   continue
 
         else if (mortalityflag .eq. 2) then ! quadratic grazer mortality
          do 160 k=1,fnum
           do 170 j = 1,zmax
+
+          ztemp(j,k) = max(ztemp(j,k), 10.0**(-20.0))! prevents ztemp from being negative
+
           ztemp2(j,k) = ztemp(j,k) + 
      &  (ztemp(j,k)*(-zm(j,k)*ztemp(j,k) - R(j,k))
      &   + zgamma*ggrazer(j,k))*dt
+
+          ztemp2(j,k) = max(ztemp2(j,k), 10.0**(-20.0))! prevents ztemp2 from being negative
+
 170       continue
 160   continue
 
