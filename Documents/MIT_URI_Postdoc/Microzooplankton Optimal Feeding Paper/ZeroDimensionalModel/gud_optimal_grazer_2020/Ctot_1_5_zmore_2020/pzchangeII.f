@@ -91,8 +91,15 @@ c ** Calculating biomass values at new time step
 
           ztemp(j,k) = max(ztemp(j,k), 10.0**(-20.0))! prevents ztemp from being negative
 
-          ztemp2(j,k) = ztemp(j,k) + 
-     &        (ztemp(j,k)*(-zm(j,k) - R(j,k)) + zgamma*ggrazer(j,k))*dt
+c ********* change in grazer biomass, respiration varies based on cell size; based on Fenchel and Finlay (1983)
+c          ztemp2(j,k) = ztemp(j,k) + 
+c     &        (ztemp(j,k)*(-zm(j,k) - R(j,k)) + zgamma*ggrazer(j,k))*dt
+
+c ****Different respiration parameterization, scales with ingestion, based on Verity (1985) (also swimming)
+          ztemp2(j,k) =  ztemp(j,k) + 
+     &        (ztemp(j,k)*(-zm(j,k) - R(j,k))!+0.00000278 )  
+     &        - (0.63*ggrazer(j,k))
+     &        + zgamma*ggrazer(j,k))*dt
 
           ztemp2(j,k) = max(ztemp2(j,k), 10.0**(-20.0))! prevents ztemp2 from being negative
 

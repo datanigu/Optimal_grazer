@@ -227,7 +227,7 @@ c For encounter kernel (only important if encounterflag = 2)
       alpha = 0.0
 
 c Physiological parameters (mortality, respiration, swimming, grazing)
-      zgamma = 0.7
+      zgamma = 0.97!0.7
       zm0(1) = 0.05/24.0/3600.0
 c      zm0(2) = 0.05/24./3600
 c      zm0(3) = 0.05/24./3600

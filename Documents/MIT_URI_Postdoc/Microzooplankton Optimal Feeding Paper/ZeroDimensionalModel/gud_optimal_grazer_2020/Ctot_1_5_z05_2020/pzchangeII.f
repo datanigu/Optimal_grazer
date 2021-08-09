@@ -91,8 +91,15 @@ c ** Calculating biomass values at new time step
 
           ztemp(j,k) = max(ztemp(j,k), 10.0**(-20.0))! prevents ztemp from being negative
 
-          ztemp2(j,k) = ztemp(j,k) + 
-     &        (ztemp(j,k)*(-zm(j,k) - R(j,k)) + zgamma*ggrazer(j,k))*dt
+c ********* change in grazer biomass, respiration constant (but based on cell size); based on Fenchel and Finlay (1983)
+c          ztemp2(j,k) = ztemp(j,k) + 
+c     &        (ztemp(j,k)*(-zm(j,k) - R(j,k)) + zgamma*ggrazer(j,k))*dt
+
+c ****Different respiration parameterization, scales with ingestion, based on Verity (1985) (also swimming)
+          ztemp2(j,k) =  ztemp(j,k) + 
+     &        (ztemp(j,k)*(-zm(j,k) - R(j,k))!+0.00000278 )  
+     &        - (0.63*ggrazer(j,k))
+     &        + zgamma*ggrazer(j,k))*dt
 
           ztemp2(j,k) = max(ztemp2(j,k), 10.0**(-20.0))! prevents ztemp2 from being negative
 150       continue
@@ -114,7 +121,9 @@ c ** Calculating biomass values at new time step
 
       end if
 
-     
+c      print*, 'ggrazer(j,k)',ggrazer
+c      print*, 'ztemp(1,1)',ztemp
+c      print*,'respiration',-0.00000278+0.63*ggrazer(1,1)/ztemp(1,1)
 
 cc *** Updating the dissolve nutrient value
 c      Cdis2 = Ctot - sum(ptemp2) - sum(ztemp2)

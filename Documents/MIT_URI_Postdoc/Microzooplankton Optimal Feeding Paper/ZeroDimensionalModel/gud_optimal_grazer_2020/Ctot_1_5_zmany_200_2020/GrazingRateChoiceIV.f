@@ -120,8 +120,8 @@ c        print*,'pCsize',pCsize
       do 700 i=ind1,ind2
        do 800 j=1,pnum
          gtemp(i,j) = gmax(i,j,f)*(pCsize(j)/(pCsize(j)!<--This changed in 2020, too 
-     &      + zCcell(i,f)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))!<--Changed back in 2021
-c     &      + pCcell(j)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))!<- Changed in 2020
+c     &      + zCcell(i,f)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))
+     &      + pCcell(j)/beta(i,j,f)/h(i,j,f)/capture(i,j,f) ))!<- Changed in 2020
 800    continue
 700   continue
 

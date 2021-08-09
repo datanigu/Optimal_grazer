@@ -132,8 +132,10 @@ c     &      12.0*(10.**12)/0.216/3600.0!1/sec, basal respiration rate--this is 
 
 
 
-      R0(st,q) = z0R(st,q)/(10.0**9.0)*(1.0/0.08206/(tmp+273.15))*12.0*
-     &       (10.0**12.0)/(0.216*(zvmx(st,q)*10.0**18.0)**0.939)/3600.0! CORRECT!
+c      R0(st,q) = z0R(st,q)/(10.0**9.0)*(1.0/0.08206/(tmp+273.15))*12.0*
+c     &       (10.0**12.0)/(0.216*(zvmx(st,q)*10.0**18.0)**0.939)/3600.0! CORRECT! from Fenchel and Finlay (1983)
+
+      R0(st,q) = 0.0!if respiration scales and is accounted for in ingestion (from Verity 1985)
 
 c      Rv(st,q) = ((3.0*pi*zrmx(st,q)*2.0*(v(st,q)**2.0))*etatmp/1000.0
 c     &        *(10.0**(-3.0))/20.2/(tmp+273.15) 
