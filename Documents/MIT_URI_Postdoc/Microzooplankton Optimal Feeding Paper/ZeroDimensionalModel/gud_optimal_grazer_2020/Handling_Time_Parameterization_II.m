@@ -582,6 +582,20 @@ title('Inverse of handling time')
 legend('flagellages','dinoflagellates','ciliates','direct measure of handling','Location','NorthWest')
 legend('boxoff')
 
+%%%%%%%%%% Just measure of actual measure of handling time vs pred
+%%%%%%%%%% radius:prey radius
+figure(22);clf
+loglog(h_predr./ h_preyr,h_t_corr,'ok','MarkerSize',20,'LineWidth',3)
+hold on
+loglog(h_predr./h_preyr,regress_direct_hand,'-b','LineWidth',5)
+xlabel('predator radius/prey radius')
+ylabel('handling time, seconds')
+title('Handling Time')
+legend('direct measurements of handling time','linear regression','Location','SouthWest')
+legend('boxoff')
+xlim([1,10])
+
+
 %% Color-coordinating values from same source
 % NB: STILL BASED ON VOLUME
 figure(16);clf
